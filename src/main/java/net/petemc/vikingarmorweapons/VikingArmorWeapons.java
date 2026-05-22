@@ -1,6 +1,8 @@
 package net.petemc.vikingarmorweapons;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -11,6 +13,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 import net.petemc.vikingarmorweapons.entity.ModEntities;
 import net.petemc.vikingarmorweapons.items.ModItems;
 import org.slf4j.Logger;
@@ -23,24 +27,24 @@ public class VikingArmorWeapons
     public static final String NAME = "Viking Armor and Weapons";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final CreativeModeTab TAB = new CreativeModeTab("Viking Armor and Weapons") {
-        @Override
-        public ItemStack makeIcon() {
-            return new ItemStack(ModItems.VIKING_HELMET.get());
-        }
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
+            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
 
-        @Override
-        public void fillItemList(net.minecraft.core.NonNullList<ItemStack> items) {
-            items.add(new ItemStack(ModItems.VIKING_HELMET.get()));
-            items.add(new ItemStack(ModItems.VIKING_CHESTPLATE.get()));
-            items.add(new ItemStack(ModItems.VIKING_LEGGINGS.get()));
-            items.add(new ItemStack(ModItems.VIKING_BOOTS.get()));
-            items.add(new ItemStack(ModItems.VIKING_BATTLE_AXE.get()));
-            items.add(new ItemStack(ModItems.VIKING_HAMMER.get()));
-            items.add(new ItemStack(ModItems.THROWING_AXE.get()));
-            items.add(new ItemStack(ModItems.THROWING_AXE_BROKEN.get()));
-        }
-    };
+    public static final RegistryObject<CreativeModeTab> TAB = CREATIVE_MODE_TABS.register("vikingarmorweapons",
+            () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup." + MOD_ID))
+                    .icon(() -> new ItemStack(ModItems.VIKING_HELMET.get()))
+                    .displayItems((parameters, output) -> {
+                        output.accept(ModItems.VIKING_HELMET.get());
+                        output.accept(ModItems.VIKING_CHESTPLATE.get());
+                        output.accept(ModItems.VIKING_LEGGINGS.get());
+                        output.accept(ModItems.VIKING_BOOTS.get());
+                        output.accept(ModItems.VIKING_BATTLE_AXE.get());
+                        output.accept(ModItems.VIKING_HAMMER.get());
+                        output.accept(ModItems.THROWING_AXE.get());
+                        output.accept(ModItems.THROWING_AXE_BROKEN.get());
+                    })
+                    .build());
 
     public VikingArmorWeapons(FMLJavaModLoadingContext context)
     {
@@ -49,6 +53,7 @@ public class VikingArmorWeapons
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
+        CREATIVE_MODE_TABS.register(modEventBus);
         ModItems.register(modEventBus);
         ModEntities.register(modEventBus);
 

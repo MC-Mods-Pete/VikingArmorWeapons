@@ -17,7 +17,7 @@ import net.petemc.vikingarmorweapons.VikingArmorWeapons;
 import org.jetbrains.annotations.NotNull;
 
 public class VikingArmorModel<T extends Entity> extends EntityModel<T> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(VikingArmorWeapons.MOD_ID, "modelviking_armor"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(VikingArmorWeapons.MOD_ID, "modelviking_armor"), "main");
     public final ModelPart chestplate;
     public final ModelPart left_leg;
     public final ModelPart right_leg;

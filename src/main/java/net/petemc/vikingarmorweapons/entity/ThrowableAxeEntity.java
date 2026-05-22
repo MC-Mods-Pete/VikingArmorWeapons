@@ -1,7 +1,6 @@
 package net.petemc.vikingarmorweapons.entity;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -16,16 +15,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.vikingarmorweapons.items.ModItems;
 
 public class ThrowableAxeEntity extends AbstractArrow {
-
-    public ThrowableAxeEntity(PlayMessages.SpawnEntity packet, Level world) {
-        super(ModEntities.THROWABLE_AXE.get(), world);
-    }
 
     public ThrowableAxeEntity(EntityType<? extends ThrowableAxeEntity> type, Level world) {
         super(type, world);
@@ -37,11 +30,6 @@ public class ThrowableAxeEntity extends AbstractArrow {
 
     public ThrowableAxeEntity(EntityType<? extends ThrowableAxeEntity> type, LivingEntity entity, Level world) {
         super(type, entity, world);
-    }
-
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
@@ -64,7 +52,7 @@ public class ThrowableAxeEntity extends AbstractArrow {
         super.onHitEntity(pResult);
 
         // Tatsächlichen Schaden berechnen und als Chat-Nachricht ausgeben
-        if (!this.level.isClientSide() && pResult.getEntity() instanceof LivingEntity target
+        if (!this.level().isClientSide() && pResult.getEntity() instanceof LivingEntity target
                 && this.getOwner() instanceof Player shooter) {
             float hpAfter = target.getHealth();
             float actualDamage = hpBefore - hpAfter;
@@ -89,22 +77,22 @@ public class ThrowableAxeEntity extends AbstractArrow {
 
     /** Spawns the axe as an ItemEntity and removes the projectile */
     private void dropAndDiscard(boolean broken) {
-        if (!this.level.isClientSide()) {
+        if (!this.level().isClientSide()) {
             ItemStack drop = broken
                     ? new ItemStack(ModItems.THROWING_AXE_BROKEN.get())
                     : new ItemStack(ModItems.THROWING_AXE.get());
 
             if (broken) {
-                this.level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
                         SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
             }
 
             ItemEntity itemEntity = new ItemEntity(
-                    this.level, this.getX(), this.getY(), this.getZ(), drop
+                    this.level(), this.getX(), this.getY(), this.getZ(), drop
             );
             itemEntity.setDefaultPickUpDelay();
             itemEntity.lifespan = Integer.MAX_VALUE;  // never despawn
-            this.level.addFreshEntity(itemEntity);
+            this.level().addFreshEntity(itemEntity);
             this.discard();
         }
     }
@@ -133,13 +121,13 @@ public class ThrowableAxeEntity extends AbstractArrow {
         entityarrow.setKnockback(knockback);
         world.addFreshEntity(entityarrow);
         world.playSound((Player) null, entity.getX(), entity.getY(), entity.getZ(),
-                (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.metal.hit")),
+                (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("block.metal.hit")),
                 SoundSource.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.5F + 1.0F) + power / 2.0F);
         return entityarrow;
     }
 
     public static ThrowableAxeEntity shoot(LivingEntity entity, LivingEntity target) {
-        ThrowableAxeEntity entityarrow = new ThrowableAxeEntity(ModEntities.THROWABLE_AXE.get(), entity, entity.level);
+        ThrowableAxeEntity entityarrow = new ThrowableAxeEntity(ModEntities.THROWABLE_AXE.get(), entity, entity.level());
         double dx = target.getX() - entity.getX();
         double dy = target.getY() + (double) target.getBbHeight() - 1.1;
         double dz = target.getZ() - entity.getZ();
@@ -148,9 +136,9 @@ public class ThrowableAxeEntity extends AbstractArrow {
         entityarrow.setBaseDamage(16.0);
         entityarrow.setKnockback(2);
         entityarrow.setShotFromCrossbow(false);
-        entity.level.addFreshEntity(entityarrow);
-        entity.level.playSound((Player) null, entity.getX(), entity.getY(), entity.getZ(),
-                (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.metal.hit")),
+        entity.level().addFreshEntity(entityarrow);
+        entity.level().playSound((Player) null, entity.getX(), entity.getY(), entity.getZ(),
+                (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("block.metal.hit")),
                 SoundSource.PLAYERS, 1.0F, 1.0F / (RandomSource.create().nextFloat() * 0.5F + 1.0F));
         return entityarrow;
     }

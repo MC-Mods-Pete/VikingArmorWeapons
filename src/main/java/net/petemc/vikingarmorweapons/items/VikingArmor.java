@@ -6,33 +6,26 @@ import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.petemc.vikingarmorweapons.VikingArmorWeapons;
 import net.petemc.vikingarmorweapons.armor.ModArmorMaterials;
 import net.petemc.vikingarmorweapons.client.model.VikingArmorModel;
 
 public abstract class VikingArmor extends ArmorItem {
-    public VikingArmor(EquipmentSlot pSlot, Properties pProperties) {
-        super(ModArmorMaterials.VIKING, pSlot, pProperties);
+    public VikingArmor(ArmorItem.Type type, Properties pProperties) {
+        super(ModArmorMaterials.VIKING, type, pProperties);
     }
 
     public static class Helmet extends VikingArmor {
         public Helmet() {
-            super(EquipmentSlot.HEAD, (new Item.Properties()).tab(VikingArmorWeapons.TAB).fireResistant());
+            super(ArmorItem.Type.HELMET, (new Item.Properties()).fireResistant());
         }
 
         public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -55,7 +48,7 @@ public abstract class VikingArmor extends ArmorItem {
 
     public static class Chestplate extends VikingArmor {
         public Chestplate() {
-            super(EquipmentSlot.CHEST, (new Item.Properties()).tab(VikingArmorWeapons.TAB).fireResistant());
+            super(ArmorItem.Type.CHESTPLATE, (new Item.Properties()).fireResistant());
         }
 
         public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -79,7 +72,7 @@ public abstract class VikingArmor extends ArmorItem {
 
     public static class Leggings extends VikingArmor {
         public Leggings() {
-            super(EquipmentSlot.LEGS, (new Item.Properties()).tab(VikingArmorWeapons.TAB).fireResistant());
+            super(ArmorItem.Type.LEGGINGS, (new Item.Properties()).fireResistant());
         }
 
         public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -103,7 +96,7 @@ public abstract class VikingArmor extends ArmorItem {
 
     public static class Boots extends VikingArmor {
         public Boots() {
-            super(EquipmentSlot.FEET, (new Item.Properties()).tab(VikingArmorWeapons.TAB).fireResistant());
+            super(ArmorItem.Type.BOOTS, (new Item.Properties()).fireResistant());
         }
 
         public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -125,4 +118,3 @@ public abstract class VikingArmor extends ArmorItem {
         }
     }
 }
-

@@ -8,7 +8,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import net.petemc.vikingarmorweapons.VikingArmorWeapons;
 
 public class VikingHammer extends AxeItem {
         public VikingHammer() {
@@ -42,7 +41,7 @@ public class VikingHammer extends AxeItem {
                 public Ingredient getRepairIngredient() {
                     return Ingredient.of(new ItemStack[]{new ItemStack(Items.IRON_INGOT), new ItemStack(Items.FLINT)});
                 }
-            }, 1.0F, -3.75F, (new Properties()).tab(VikingArmorWeapons.TAB).fireResistant());
+            }, 1.0F, -3.75F, (new Properties()).fireResistant());
         }
 
     public VikingHammer(Tier pTier, float pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {

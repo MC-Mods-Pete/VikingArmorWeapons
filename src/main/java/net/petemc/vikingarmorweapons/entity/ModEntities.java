@@ -46,7 +46,6 @@ public class ModEntities {
         REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, VikingArmorWeapons.MOD_ID);
         THROWABLE_AXE = register("projectile_throwable_axe",
                 EntityType.Builder.<ThrowableAxeEntity>of(ThrowableAxeEntity::new, MobCategory.MISC)
-                        .setCustomClientFactory(ThrowableAxeEntity::new)
                         .setShouldReceiveVelocityUpdates(true)
                         .setTrackingRange(64)
                         .setUpdateInterval(1)

@@ -6,7 +6,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.petemc.vikingarmorweapons.VikingArmorWeapons;
 
 public class VikingBattleAxe extends AxeItem {
         public VikingBattleAxe() {
@@ -40,7 +39,7 @@ public class VikingBattleAxe extends AxeItem {
                 public Ingredient getRepairIngredient() {
                     return Ingredient.of(new ItemStack[]{new ItemStack(Items.IRON_INGOT), new ItemStack(Items.FLINT)});
                 }
-            }, 1.0F, -3.75F, (new Item.Properties()).tab(VikingArmorWeapons.TAB).fireResistant());
+            }, 1.0F, -3.75F, (new Item.Properties()).fireResistant());
         }
 
     public VikingBattleAxe(Tier pTier, float pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
