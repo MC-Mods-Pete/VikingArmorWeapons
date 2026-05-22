@@ -1,0 +1,23 @@
+{
+  "loader": "forge:separate_transforms",
+  "render_type": "minecraft:cutout",
+  "gui_light": "front",
+  "base": {
+    "parent": "vikingarmorweapons:custom/viking_light_axe_broken",
+    "render_type": "minecraft:cutout",
+    "textures": {
+      "0": "vikingarmorweapons:block/viking_light_axe_broken",
+      "particle": "vikingarmorweapons:block/viking_light_axe_broken"
+    }
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "vikingarmorweapons:item/viking_light_axe_broken"
+      },
+      "gui_light": "front"
+    }
+  }
+}
+

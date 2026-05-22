@@ -1,0 +1,7 @@
+{
+  "parent": "vikingarmorweapons:custom/viking_light_axe",
+  "textures": {
+    "0": "vikingarmorweapons:block/viking_light_axe",
+    "particle": "vikingarmorweapons:item/viking_light_axe"
+  }
+}

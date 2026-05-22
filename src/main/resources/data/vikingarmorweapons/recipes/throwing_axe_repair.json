@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "vikingarmorweapons:viking_light_axe_broken" },
+    { "item": "minecraft:iron_nugget" },
+    { "item": "minecraft:iron_nugget" },
+    { "item": "minecraft:iron_nugget" }
+  ],
+  "result": {
+    "item": "vikingarmorweapons:throwing_axe",
+    "count": 1
+  }
+}
+
