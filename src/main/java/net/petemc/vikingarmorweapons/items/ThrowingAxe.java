@@ -41,7 +41,7 @@ public class ThrowingAxe extends Item {
 
     @Override
     public int getUseDuration(ItemStack pStack) {
-        return 72000;
+        return 300;
     }
 
     @Override
@@ -58,12 +58,10 @@ public class ThrowingAxe extends Item {
 
     @Override
     public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
-            if (!pAttacker.level().isClientSide() && pAttacker instanceof Player player) {
-                VikingArmorWeapons.LOGGER.info("Throwing Axe hit an entity!");
-                if (pAttacker.getRandom().nextFloat() < 0.50f) {
-                    VikingArmorWeapons.LOGGER.info("Throwing Axe broke on hit!");
-                    // 10% Chance: Axt zerbricht
-                    pAttacker.level().playSound(null,
+        if (!pAttacker.level().isClientSide() && pAttacker instanceof Player player) {
+            if (pAttacker.getRandom().nextFloat() < 0.30f) {
+                // 10% chance: axe breaks
+                pAttacker.level().playSound(null,
                         pAttacker.getX(), pAttacker.getY(), pAttacker.getZ(),
                         SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
 
