@@ -59,6 +59,7 @@ public class ThrowableAxeRenderer extends EntityRenderer<ThrowableAxeEntity> {
     }
 
     @Override
+    @SuppressWarnings("removal") // see VikingArmorModel.LAYER_LOCATION
     public ResourceLocation getTextureLocation(ThrowableAxeEntity entity) {
         // Not used directly – ItemRenderer handles the texture
         return new ResourceLocation("minecraft", "textures/misc/white.png");

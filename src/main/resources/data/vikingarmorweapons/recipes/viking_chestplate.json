@@ -1,12 +1,13 @@
 {
-  "type": "minecraft:smithing",
-  "base": {
-    "item": "minecraft:iron_chestplate"
-  },
-  "addition": {
-    "item": "minecraft:leather"
-  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "group": "viking",
+  "ingredients": [
+    { "item": "minecraft:iron_chestplate" },
+    { "item": "minecraft:leather" }
+  ],
   "result": {
-    "item": "vikingarmorweapons:viking_chestplate"
+    "item": "vikingarmorweapons:viking_chestplate",
+    "count": 1
   }
 }

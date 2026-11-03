@@ -2,8 +2,10 @@
   "itemGroup.Viking Armor and Weapons": "Viking Armor & Weapons",
 
   "item.vikingarmorweapons.viking_battle_axe": "Viking Battle Axe",
+  "item.vikingarmorweapons.viking_battle_axe.tooltip": "Fully charged hits also strike nearby enemies",
   "item.vikingarmorweapons.viking_light_axe": "Viking Light Axe",
   "item.vikingarmorweapons.viking_hammer": "Viking Hammer",
+  "item.vikingarmorweapons.viking_hammer.tooltip": "Critical hits (attack while falling) knock back nearby enemies",
   "item.vikingarmorweapons.throwing_axe": "Throwing Axe",
   "item.vikingarmorweapons.viking_light_axe_broken": "Broken Throwing Axe",
 

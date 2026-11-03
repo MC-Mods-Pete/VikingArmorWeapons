@@ -1,12 +1,13 @@
 {
-  "type": "minecraft:smithing",
-  "base": {
-    "item": "minecraft:iron_axe"
-  },
-  "addition": {
-    "item": "minecraft:iron_ingot"
-  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "group": "viking",
+  "ingredients": [
+    { "item": "minecraft:iron_axe" },
+    { "item": "minecraft:iron_ingot" }
+  ],
   "result": {
-    "item": "vikingarmorweapons:throwing_axe"
+    "item": "vikingarmorweapons:throwing_axe",
+    "count": 1
   }
 }

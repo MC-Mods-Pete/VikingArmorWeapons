@@ -42,9 +42,12 @@ public class VikingArmorWeapons
         }
     };
 
-    public VikingArmorWeapons(FMLJavaModLoadingContext context)
+    // No-arg constructor + FMLJavaModLoadingContext.get() on purpose: the constructor parameter variant
+    // only exists since Forge 43.4.3 (1.19.2) / 47.3.10 (1.20.1) and would crash on older Forge versions.
+    @SuppressWarnings("removal")
+    public VikingArmorWeapons()
     {
-        IEventBus modEventBus = context.getModEventBus();
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
@@ -56,7 +59,7 @@ public class VikingArmorWeapons
         MinecraftForge.EVENT_BUS.register(this);
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
-        //context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)

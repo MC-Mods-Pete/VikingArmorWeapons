@@ -17,6 +17,8 @@ import net.petemc.vikingarmorweapons.VikingArmorWeapons;
 import org.jetbrains.annotations.NotNull;
 
 public class VikingArmorModel<T extends Entity> extends EntityModel<T> {
+    // new ResourceLocation(...) on purpose: the replacement factory methods only exist in newer Forge builds
+    @SuppressWarnings("removal")
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(VikingArmorWeapons.MOD_ID, "modelviking_armor"), "main");
     public final ModelPart chestplate;
     public final ModelPart left_leg;
