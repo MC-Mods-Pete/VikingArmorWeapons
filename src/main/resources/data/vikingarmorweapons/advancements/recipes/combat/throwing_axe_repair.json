@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "vikingarmorweapons:throwing_axe_repair"
+    ]
+  },
+  "criteria": {
+    "has_viking_light_axe_broken": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "vikingarmorweapons:viking_light_axe_broken"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "vikingarmorweapons:throwing_axe_repair"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_viking_light_axe_broken",
+      "has_the_recipe"
+    ]
+  ]
+}

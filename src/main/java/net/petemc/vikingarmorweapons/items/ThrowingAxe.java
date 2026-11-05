@@ -60,7 +60,7 @@ public class ThrowingAxe extends Item {
     public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
         if (!pAttacker.level().isClientSide() && pAttacker instanceof Player player) {
             if (pAttacker.getRandom().nextFloat() < 0.30f) {
-                // 10% chance: axe breaks
+                // 30% chance: axe breaks
                 pAttacker.level().playSound(null,
                         pAttacker.getX(), pAttacker.getY(), pAttacker.getZ(),
                         SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -68,7 +68,7 @@ public class ThrowingAxe extends Item {
                 if (!player.getAbilities().instabuild) {
                     pStack.shrink(1);
                 }
-                ItemStack broken = new ItemStack(ModItems.THROWING_AXE_BROKEN.get());
+                ItemStack broken = new ItemStack(ModItems.THROWING_AXE_BROKEN);
                 if (!player.getInventory().add(broken)) {
                     player.drop(broken, false);
                 }
@@ -86,9 +86,11 @@ public class ThrowingAxe extends Item {
 
         if (!pLevel.isClientSide()) {
             ThrowableAxeEntity axe = new ThrowableAxeEntity(
-                    ModEntities.THROWABLE_AXE.get(), player, pLevel);
+                    ModEntities.THROWABLE_AXE, player, pLevel);
             axe.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.9F, 1.0F);
-            axe.setBaseDamage(5.5);
+            // Damage = ceil(velocity * baseDamage): 4.0 * 1.9 = 7.6 -> 8 at launch (thrown trident level).
+            // Before 1.0.3: 5.5 base + 1 HP via setHealth (bypassed death handling: no loot/XP/death message).
+            axe.setBaseDamage(4.0);
             axe.setKnockback(1);
             axe.setSilent(true);
 

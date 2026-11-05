@@ -1,12 +1,13 @@
 {
-  "type": "minecraft:smithing",
-  "base": {
-    "item": "minecraft:iron_boots"
-  },
-  "addition": {
-    "item": "minecraft:leather"
-  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "group": "viking",
+  "ingredients": [
+    { "item": "minecraft:iron_boots" },
+    { "item": "minecraft:leather" }
+  ],
   "result": {
-    "item": "vikingarmorweapons:viking_boots"
+    "item": "vikingarmorweapons:viking_boots",
+    "count": 1
   }
 }

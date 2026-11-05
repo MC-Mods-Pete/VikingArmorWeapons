@@ -1,12 +1,13 @@
 {
-  "type": "minecraft:smithing",
-  "base": {
-    "item": "minecraft:iron_leggings"
-  },
-  "addition": {
-    "item": "minecraft:leather"
-  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "group": "viking",
+  "ingredients": [
+    { "item": "minecraft:iron_leggings" },
+    { "item": "minecraft:leather" }
+  ],
   "result": {
-    "item": "vikingarmorweapons:viking_leggings"
+    "item": "vikingarmorweapons:viking_leggings",
+    "count": 1
   }
 }
