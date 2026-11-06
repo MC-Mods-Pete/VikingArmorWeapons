@@ -15,11 +15,10 @@
     "main": ["net.petemc.vikingarmorweapons.VikingArmorWeapons"],
     "client": ["net.petemc.vikingarmorweapons.client.VikingArmorWeaponsClient"]
   },
-  "mixins": ["vikingarmorweapons.mixins.json"],
   "depends": {
     "fabricloader": ">=${loader_version_min}",
     "minecraft": "${minecraft_version_range}",
-    "java": ">=17",
-    "fabric-api": "*"
+    "java": ">=25",
+    "fabric-api": ">=${fabric_version_min}"
   }
 }

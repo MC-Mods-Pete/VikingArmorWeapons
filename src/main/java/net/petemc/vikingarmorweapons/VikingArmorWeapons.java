@@ -6,11 +6,11 @@ import net.petemc.vikingarmorweapons.items.WeaponAbilities;
 import com.mojang.logging.LogUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.petemc.vikingarmorweapons.entity.ModEntities;
@@ -25,8 +25,9 @@ public class VikingArmorWeapons implements ModInitializer
 
     public static CreativeModeTab TAB;
 
-    public static ResourceLocation id(String path) {
-        return new ResourceLocation(MOD_ID, path);
+    // Minecraft 26.1 renamed ResourceLocation to Identifier
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
     @Override
@@ -36,7 +37,7 @@ public class VikingArmorWeapons implements ModInitializer
         ModEntities.register();
 
         TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, id("vikingarmorweapons"),
-                FabricItemGroup.builder()
+                FabricCreativeModeTab.builder()
                         .title(Component.translatable("itemGroup." + MOD_ID))
                         .icon(() -> new ItemStack(ModItems.VIKING_HELMET))
                         .displayItems((parameters, output) -> {

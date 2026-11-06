@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "vikingarmorweapons:throwing_axe"
+    ]
+  },
+  "criteria": {
+    "has_iron_axe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:iron_axe"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "vikingarmorweapons:throwing_axe"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_iron_axe",
+      "has_the_recipe"
+    ]
+  ]
+}

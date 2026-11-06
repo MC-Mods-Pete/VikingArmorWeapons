@@ -1,8 +1,5 @@
 package net.petemc.vikingarmorweapons.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -11,12 +8,13 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.petemc.vikingarmorweapons.VikingArmorWeapons;
-import org.jetbrains.annotations.NotNull;
 
-public class VikingArmorModel<T extends Entity> extends EntityModel<T> {
+/**
+ * Blockbench model of the Viking armor (128x64). Since 1.21.2 entity models are bound to render states, so this
+ * class only holds the baked parts; VikingArmorModels groups them per armor slot.
+ */
+public class VikingArmorModel {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(VikingArmorWeapons.id("modelviking_armor"), "main");
     public final ModelPart chestplate;
     public final ModelPart left_leg;
@@ -67,23 +65,4 @@ public class VikingArmorModel<T extends Entity> extends EntityModel<T> {
         PartDefinition boots = partdefinition.addOrReplaceChild("boots", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
         return LayerDefinition.create(meshdefinition, 128, 64);
     }
-
-    @Override
-    public void setupAnim(T t, float v, float v1, float v2, float v3, float v4) {
-    }
-
-    @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        this.chestplate.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.helmet.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.legginsleft.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.legginsright.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.seax.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.boots.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-    }
 }
-

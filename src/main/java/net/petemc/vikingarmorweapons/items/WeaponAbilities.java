@@ -6,7 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -48,8 +48,8 @@ public final class WeaponAbilities {
             return;
         }
         boolean charged = player.getAttackStrengthScale(0.5F) > 0.9F;
-        boolean critical = charged && player.fallDistance > 0.0F && !player.onGround() && !player.onClimbable()
-                && !player.isInWater() && !player.hasEffect(MobEffects.BLINDNESS) && !player.isPassenger()
+        boolean critical = charged && player.fallDistance > 0.0 && !player.onGround() && !player.onClimbable()
+                && !player.isInWater() && !player.isMobilityRestricted() && !player.isPassenger()
                 && !player.isSprinting();
         ATTACKS.put(player, new AttackState(player.tickCount, charged, critical));
     }
@@ -63,49 +63,55 @@ public final class WeaponAbilities {
     /** Battle Axe: fully charged hits also strike enemies next to the target. */
     public static void cleave(Player player, LivingEntity target) {
         AttackState state = takeAttack(player);
-        if (state == null || !state.fullyCharged()) {
+        if (state == null || !state.fullyCharged() || !(player.level() instanceof ServerLevel level)) {
             return;
         }
         float damage = (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) * CLEAVE_DAMAGE_FACTOR;
         float yaw = player.getYRot() * Mth.DEG_TO_RAD;
         // Same area as the vanilla sword sweep
-        for (LivingEntity other : player.level().getEntitiesOfClass(LivingEntity.class,
+        for (LivingEntity other : level.getEntitiesOfClass(LivingEntity.class,
                 target.getBoundingBox().inflate(1.0D, 0.25D, 1.0D))) {
             if (isAffected(player, target, other) && player.distanceToSqr(other) < 9.0D) {
-                other.knockback(0.4F, Mth.sin(yaw), -Mth.cos(yaw));
-                other.hurt(player.damageSources().playerAttack(player), damage);
+                DamageSource source = player.damageSources().playerAttack(player);
+                // Since 26.2 knockback also takes the damage source and amount (like vanilla's sweep attack)
+                other.knockback(0.4F, Mth.sin(yaw), -Mth.cos(yaw), source, damage);
+                other.hurtServer(level, source, damage);
             }
         }
-        player.sweepAttack();  // sweep particle + sound
+        // Sweep particle + sound (Player.sweepAttack() no longer exists, same effect as Player.doSweepAttack)
+        level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.PLAYER_ATTACK_SWEEP, player.getSoundSource(), 1.0F, 1.0F);
+        double dx = -Mth.sin(yaw);
+        double dz = Mth.cos(yaw);
+        level.sendParticles(ParticleTypes.SWEEP_ATTACK, player.getX() + dx, player.getY(0.5D), player.getZ() + dz, 0, dx, 0.0D, dz, 0.0D);
     }
 
     /** Hammer: critical hits knock back all enemies around the target. */
     public static void shockwave(Player player, LivingEntity target) {
         AttackState state = takeAttack(player);
-        if (state == null || !state.critical()) {
+        if (state == null || !state.critical() || !(player.level() instanceof ServerLevel level)) {
             return;
         }
         double radius = SHOCKWAVE_RADIUS;
-        for (LivingEntity other : player.level().getEntitiesOfClass(LivingEntity.class,
+        for (LivingEntity other : level.getEntitiesOfClass(LivingEntity.class,
                 target.getBoundingBox().inflate(radius, 1.0D, radius))) {
             if (isAffected(player, target, other) && other.distanceToSqr(target) <= radius * radius) {
-                other.hurt(player.damageSources().playerAttack(player), SHOCKWAVE_DAMAGE);
+                DamageSource source = player.damageSources().playerAttack(player);
+                other.hurtServer(level, source, SHOCKWAVE_DAMAGE);
                 // Push away from the target (knockback() pushes against the given direction)
-                other.knockback(SHOCKWAVE_KNOCKBACK, target.getX() - other.getX(), target.getZ() - other.getZ());
+                other.knockback(SHOCKWAVE_KNOCKBACK, target.getX() - other.getX(), target.getZ() - other.getZ(), source, SHOCKWAVE_DAMAGE);
             }
         }
 
-        if (player.level() instanceof ServerLevel level) {
-            BlockState ground = level.getBlockState(target.blockPosition().below());
-            if (!ground.isAir()) {
-                level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, ground),
-                        target.getX(), target.getY() + 0.1D, target.getZ(), 60, radius / 2, 0.1D, radius / 2, 0.15D);
-            }
-            level.sendParticles(ParticleTypes.POOF, target.getX(), target.getY() + 0.2D, target.getZ(),
-                    12, radius / 3, 0.1D, radius / 3, 0.05D);
-            level.playSound(null, target.getX(), target.getY(), target.getZ(),
-                    SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.5F, 0.6F);
+        BlockState ground = level.getBlockState(target.blockPosition().below());
+        if (!ground.isAir()) {
+            level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, ground),
+                    target.getX(), target.getY() + 0.1D, target.getZ(), 60, radius / 2, 0.1D, radius / 2, 0.15D);
         }
+        level.sendParticles(ParticleTypes.POOF, target.getX(), target.getY() + 0.2D, target.getZ(),
+                12, radius / 3, 0.1D, radius / 3, 0.05D);
+        level.playSound(null, target.getX(), target.getY(), target.getZ(),
+                SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.5F, 0.6F);
     }
 
     /** Same targets as the vanilla sweep, plus: no armor stands, no own pets, no players that may not be harmed. */
@@ -116,7 +122,8 @@ public final class WeaponAbilities {
         if (player.isAlliedTo(other) || other.isAlliedTo(player)) {
             return false;
         }
-        if (other instanceof OwnableEntity pet && player.getUUID().equals(pet.getOwnerUUID())) {
+        if (other instanceof OwnableEntity pet && pet.getOwnerReference() != null
+                && player.getUUID().equals(pet.getOwnerReference().getUUID())) {
             return false;
         }
         // PvP disabled on the server, or same team without friendly fire

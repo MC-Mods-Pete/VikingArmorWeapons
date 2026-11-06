@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "b",
+    "s",
+    "s"
+  ],
+  "key": {
+    "b": "minecraft:iron_block",
+    "s": "minecraft:stick"
+  },
+  "result": {
+    "count": 1,
+    "id": "vikingarmorweapons:viking_hammer"
+  }
+}
