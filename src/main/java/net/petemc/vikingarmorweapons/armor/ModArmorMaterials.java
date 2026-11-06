@@ -1,76 +1,51 @@
 package net.petemc.vikingarmorweapons.armor;
 
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.petemc.vikingarmorweapons.VikingArmorWeapons;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
+import java.util.EnumMap;
+import java.util.Map;
 
-public enum ModArmorMaterials implements ArmorMaterial {
-    VIKING("viking",
-            new int[]{13, 15, 16, 11}, 20,
-            new int[]{2, 5, 6, 2}, 10,
+/**
+ * Since 1.21.2 armor materials are plain records again (no registry entry). Same values as the older versions:
+ * durability {11, 16, 15, 13} x 20 = Helmet 220, Chest 320, Legs 300, Boots 260, protection 2/5/6/2 (iron level),
+ * toughness 1.0, knockback resistance 0.1, enchantability 10.
+ */
+public class ModArmorMaterials {
+    public static final int DURABILITY_MULTIPLIER = 20;
+
+    /** Repair materials for the anvil: leather, raw iron, iron ingot (data/vikingarmorweapons/tags/item/repairs_viking_armor.json) */
+    public static final TagKey<Item> REPAIRS_VIKING_ARMOR = TagKey.create(Registries.ITEM, VikingArmorWeapons.id("repairs_viking_armor"));
+
+    /**
+     * The armor is rendered with its own 3D model by client.renderer.VikingArmorRenderer, so there is no
+     * equipment asset file (assets/vikingarmorweapons/equipment/viking.json). Vanilla treats a missing asset as "no layers".
+     */
+    public static final ResourceKey<EquipmentAsset> VIKING_ASSET = ResourceKey.create(EquipmentAssets.ROOT_ID, VikingArmorWeapons.id("viking"));
+
+    public static final ArmorMaterial VIKING = new ArmorMaterial(
+            DURABILITY_MULTIPLIER,
+            defense(2, 5, 6, 2),
+            10,
             SoundEvents.ARMOR_EQUIP_LEATHER,
             1.0F, 0.1F,
-            () -> Ingredient.of(new ItemStack(Items.LEATHER), new ItemStack(Items.RAW_IRON), new ItemStack(Items.IRON_INGOT)));
+            REPAIRS_VIKING_ARMOR,
+            VIKING_ASSET);
 
-    private final String name;
-    private final int[] slotDurabilities;
-    private final int durabilityMultiplier;
-    private final int[] slotProtections;
-    private final int enchantmentValue;
-    private final SoundEvent sound;
-    private final float toughness;
-    private final float knockbackResistance;
-    private final Supplier<Ingredient> repairIngredient;
-
-    ModArmorMaterials(String name, int[] slotDurabilities, int durabilityMultiplier, int[] slotProtections, int enchantmentValue, SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
-        this.name = name;
-        this.slotDurabilities = slotDurabilities;
-        this.durabilityMultiplier = durabilityMultiplier;
-        this.slotProtections = slotProtections;
-        this.enchantmentValue = enchantmentValue;
-        this.sound = sound;
-        this.toughness = toughness;
-        this.knockbackResistance = knockbackResistance;
-        this.repairIngredient = repairIngredient;
-    }
-
-    public int getDurabilityForType(ArmorItem.Type type) {
-        return this.slotDurabilities[type.getSlot().getIndex()] * this.durabilityMultiplier;
-    }
-
-    public int getDefenseForType(ArmorItem.Type type) {
-        return this.slotProtections[type.getSlot().getIndex()];
-    }
-
-    public @NotNull Ingredient getRepairIngredient() {
-        return this.repairIngredient.get();
-    }
-
-    public @NotNull String getName() {
-        return VikingArmorWeapons.MOD_ID + ":" + this.name;
-    }
-
-    public int getEnchantmentValue() {
-        return this.enchantmentValue;
-    }
-
-    public @NotNull SoundEvent getEquipSound() {
-        return this.sound;
-    }
-
-    public float getToughness() {
-        return this.toughness;
-    }
-
-    public float getKnockbackResistance() {
-        return this.knockbackResistance;
+    private static Map<ArmorType, Integer> defense(int boots, int leggings, int chestplate, int helmet) {
+        Map<ArmorType, Integer> map = new EnumMap<>(ArmorType.class);
+        map.put(ArmorType.BOOTS, boots);
+        map.put(ArmorType.LEGGINGS, leggings);
+        map.put(ArmorType.CHESTPLATE, chestplate);
+        map.put(ArmorType.HELMET, helmet);
+        return map;
     }
 }
