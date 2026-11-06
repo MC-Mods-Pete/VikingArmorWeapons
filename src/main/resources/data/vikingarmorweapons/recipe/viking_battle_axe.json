@@ -15,7 +15,7 @@
     }
   },
   "result": {
-    "item": "vikingarmorweapons:viking_battle_axe",
-    "count": 1
+    "count": 1,
+    "id": "vikingarmorweapons:viking_battle_axe"
   }
 }
