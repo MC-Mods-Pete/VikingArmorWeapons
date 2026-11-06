@@ -1,0 +1,17 @@
+{
+  "group": "viking",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iii",
+    "isi",
+    " s "
+  ],
+  "key": {
+    "i": "minecraft:iron_ingot",
+    "s": "minecraft:stick"
+  },
+  "result": {
+    "count": 1,
+    "id": "vikingarmorweapons:viking_battle_axe"
+  }
+}

@@ -1,28 +1,35 @@
 package net.petemc.vikingarmorweapons.items;
 
-import net.minecraft.world.item.*;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.petemc.vikingarmorweapons.VikingArmorWeapons;
+import net.petemc.vikingarmorweapons.armor.ModArmorMaterials;
 
 public class ModItems {
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, VikingArmorWeapons.MOD_ID);
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(VikingArmorWeapons.MOD_ID);
 
-    public static final RegistryObject<Item> VIKING_HELMET = ITEMS.register("viking_helmet", VikingArmor.Helmet::new);
-    public static final RegistryObject<Item> VIKING_CHESTPLATE = ITEMS.register("viking_chestplate", VikingArmor.Chestplate::new);
-    public static final RegistryObject<Item> VIKING_LEGGINGS = ITEMS.register("viking_leggings", VikingArmor.Leggings::new);
-    public static final RegistryObject<Item> VIKING_BOOTS = ITEMS.register("viking_boots", VikingArmor.Boots::new);
+    // Since 1.21.2 armor is a normal Item with the armor components (Properties.humanoidArmor), there is no ArmorItem anymore.
+    // The 3D model is swapped in client-side (client.VikingArmorClientExtensions).
+    // registerItem sets the item id on the properties (Properties.setId) before the item is created.
+    public static final DeferredItem<Item> VIKING_HELMET = ITEMS.registerItem("viking_helmet", Item::new, () -> armor(ArmorType.HELMET));
+    public static final DeferredItem<Item> VIKING_CHESTPLATE = ITEMS.registerItem("viking_chestplate", Item::new, () -> armor(ArmorType.CHESTPLATE));
+    public static final DeferredItem<Item> VIKING_LEGGINGS = ITEMS.registerItem("viking_leggings", Item::new, () -> armor(ArmorType.LEGGINGS));
+    public static final DeferredItem<Item> VIKING_BOOTS = ITEMS.registerItem("viking_boots", Item::new, () -> armor(ArmorType.BOOTS));
 
-    public static final RegistryObject<Item> VIKING_BATTLE_AXE = ITEMS.register("viking_battle_axe", VikingBattleAxe::new);
-    //public static final RegistryObject<Item> VIKING_LIGHT_AXE = ITEMS.register("viking_light_axe", VikingLightAxe::new);
-    public static final RegistryObject<Item> VIKING_HAMMER = ITEMS.register("viking_hammer", VikingHammer::new);
-    public static final RegistryObject<Item> THROWING_AXE = ITEMS.register("throwing_axe", ThrowingAxe::new);
-    public static final RegistryObject<Item> THROWING_AXE_BROKEN = ITEMS.register("viking_light_axe_broken", VikingLightAxeBroken::new);
+    public static final DeferredItem<Item> VIKING_BATTLE_AXE = ITEMS.registerItem("viking_battle_axe", VikingBattleAxe::new);
+    //public static final DeferredItem<Item> VIKING_LIGHT_AXE = ITEMS.registerItem("viking_light_axe", VikingLightAxe::new);
+    public static final DeferredItem<Item> VIKING_HAMMER = ITEMS.registerItem("viking_hammer", VikingHammer::new, VikingHammer::properties);
+    public static final DeferredItem<Item> THROWING_AXE = ITEMS.registerItem("throwing_axe", ThrowingAxe::new);
+    public static final DeferredItem<Item> THROWING_AXE_BROKEN = ITEMS.registerItem("viking_light_axe_broken", VikingLightAxeBroken::new);
 
-    public static void register(IEventBus eventBus){
-        ITEMS.register(eventBus);
+    private static Item.Properties armor(ArmorType type) {
+        return new Item.Properties().humanoidArmor(ModArmorMaterials.VIKING, type).fireResistant();
     }
 
+    public static void register(IEventBus eventBus) {
+        ITEMS.register(eventBus);
+    }
 }

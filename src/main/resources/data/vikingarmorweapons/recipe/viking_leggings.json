@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "group": "viking",
+  "ingredients": [
+    "minecraft:iron_leggings",
+    "minecraft:leather"
+  ],
+  "result": {
+    "count": 1,
+    "id": "vikingarmorweapons:viking_leggings"
+  }
+}

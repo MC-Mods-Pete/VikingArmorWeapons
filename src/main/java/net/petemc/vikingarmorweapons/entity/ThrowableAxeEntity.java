@@ -3,40 +3,56 @@ package net.petemc.vikingarmorweapons.entity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraftforge.network.PlayMessages;
+import net.minecraft.world.phys.Vec3;
 import net.petemc.vikingarmorweapons.items.ModItems;
 
 public class ThrowableAxeEntity extends AbstractArrow {
-
-    public ThrowableAxeEntity(PlayMessages.SpawnEntity packet, Level world) {
-        super(ModEntities.THROWABLE_AXE.get(), world);
-    }
 
     public ThrowableAxeEntity(EntityType<? extends ThrowableAxeEntity> type, Level world) {
         super(type, world);
     }
 
     public ThrowableAxeEntity(EntityType<? extends ThrowableAxeEntity> type, double x, double y, double z, Level world) {
-        super(type, x, y, z, world);
+        super(type, x, y, z, world, new ItemStack(ModItems.THROWING_AXE.get()), null);
     }
 
     public ThrowableAxeEntity(EntityType<? extends ThrowableAxeEntity> type, LivingEntity entity, Level world) {
-        super(type, entity, world);
+        super(type, entity, world, new ItemStack(ModItems.THROWING_AXE.get()), null);
     }
 
     @Override
-    public ItemStack getPickupItem() {
+    protected ItemStack getDefaultPickupItem() {
         return new ItemStack(ModItems.THROWING_AXE.get());
+    }
+
+    // Arrows lost their knockback field in 1.21 (knockback now only comes from enchantments of the firing weapon),
+    // so the throwing axe keeps its own value and applies it like 1.20.1 did.
+    private int knockback;
+
+    public void setKnockback(int knockback) {
+        this.knockback = knockback;
+    }
+
+    @Override
+    protected void doKnockback(LivingEntity entity, DamageSource damageSource) {
+        super.doKnockback(entity, damageSource);
+        if (this.knockback > 0) {
+            double resistance = Math.max(0.0, 1.0 - entity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+            Vec3 push = this.getDeltaMovement().multiply(1.0, 0.0, 1.0).normalize().scale(this.knockback * 0.6 * resistance);
+            if (push.lengthSqr() > 0.0) {
+                entity.push(push.x, 0.1, push.z);
+            }
+        }
     }
 
     @Override
@@ -106,7 +122,7 @@ public class ThrowableAxeEntity extends AbstractArrow {
                 this.level(), this.getX(), this.getY(), this.getZ(), drop
         );
         itemEntity.setDefaultPickUpDelay();
-        itemEntity.lifespan = Integer.MAX_VALUE;  // never despawn
+        itemEntity.setUnlimitedLifetime();  // never despawn
         this.level().addFreshEntity(itemEntity);
         this.discard();
     }
@@ -120,40 +136,8 @@ public class ThrowableAxeEntity extends AbstractArrow {
         lastRotation = rotation;
         super.tick();
         // Only spin while the axe is in flight, not when stuck in the ground
-        if (!inGround) {
+        if (!this.isInGround()) {
             rotation += 20.0F;
         }
-    }
-
-    public static ThrowableAxeEntity shoot(Level world, LivingEntity entity, RandomSource random, float power, double damage, int knockback) {
-        ThrowableAxeEntity entityarrow = new ThrowableAxeEntity(ModEntities.THROWABLE_AXE.get(), entity, world);
-        var look = entity.getViewVector(1.0F);
-        entityarrow.shoot(look.x, look.y, look.z, power * 2.0F, 0.0F);
-        entityarrow.setSilent(true);
-        entityarrow.setShotFromCrossbow(false);
-        entityarrow.setBaseDamage(damage);
-        entityarrow.setKnockback(knockback);
-        world.addFreshEntity(entityarrow);
-        world.playSound((Player) null, entity.getX(), entity.getY(), entity.getZ(),
-                SoundEvents.METAL_HIT,
-                SoundSource.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.5F + 1.0F) + power / 2.0F);
-        return entityarrow;
-    }
-
-    public static ThrowableAxeEntity shoot(LivingEntity entity, LivingEntity target) {
-        ThrowableAxeEntity entityarrow = new ThrowableAxeEntity(ModEntities.THROWABLE_AXE.get(), entity, entity.level());
-        double dx = target.getX() - entity.getX();
-        double dy = target.getY() + (double) target.getBbHeight() - 1.1;
-        double dz = target.getZ() - entity.getZ();
-        entityarrow.shoot(dx, dy - entityarrow.getY() + Math.hypot(dx, dz) * 0.2, dz, 2.5F, 12.0F);
-        entityarrow.setSilent(true);
-        entityarrow.setBaseDamage(16.0);
-        entityarrow.setKnockback(2);
-        entityarrow.setShotFromCrossbow(false);
-        entity.level().addFreshEntity(entityarrow);
-        entity.level().playSound((Player) null, entity.getX(), entity.getY(), entity.getZ(),
-                SoundEvents.METAL_HIT,
-                SoundSource.PLAYERS, 1.0F, 1.0F / (RandomSource.create().nextFloat() * 0.5F + 1.0F));
-        return entityarrow;
     }
 }
