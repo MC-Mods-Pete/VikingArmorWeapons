@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "vikingarmorweapons:viking"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "vikingarmorweapons:viking"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "vikingarmorweapons:viking"
+      }
+    ]
+  }
+}

@@ -1,12 +1,12 @@
 package net.petemc.vikingarmorweapons.client.model;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.petemc.vikingarmorweapons.VikingArmorWeapons;
 
-@EventBusSubscriber(bus = Bus.MOD, value = {Dist.CLIENT})
+@EventBusSubscriber(modid = VikingArmorWeapons.MOD_ID, value = Dist.CLIENT)
 public class ModModels {
     @SubscribeEvent
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
