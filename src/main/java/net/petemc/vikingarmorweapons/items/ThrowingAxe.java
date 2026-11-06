@@ -1,14 +1,11 @@
 package net.petemc.vikingarmorweapons.items;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -17,15 +14,18 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
-import net.petemc.vikingarmorweapons.VikingArmorWeapons;
 import net.petemc.vikingarmorweapons.entity.ModEntities;
 import net.petemc.vikingarmorweapons.entity.ThrowableAxeEntity;
 
 public class ThrowingAxe extends Item {
 
     public ThrowingAxe() {
-        super((new Item.Properties()).stacksTo(8));
+        super((new Item.Properties()).stacksTo(8).attributes(ItemAttributeModifiers.builder()
+                .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, 2.0, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, -3.3, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .build()));
     }
 
     @Override
@@ -40,27 +40,15 @@ public class ThrowingAxe extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack pStack) {
+    public int getUseDuration(ItemStack pStack, LivingEntity pEntity) {
         return 300;
-    }
-
-    @Override
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pSlot) {
-        if (pSlot == EquipmentSlot.MAINHAND) {
-            ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-            builder.putAll(super.getDefaultAttributeModifiers(pSlot));
-            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 2.0, Operation.ADDITION));
-            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -3.3, Operation.ADDITION));
-            return builder.build();
-        }
-        return super.getDefaultAttributeModifiers(pSlot);
     }
 
     @Override
     public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
         if (!pAttacker.level().isClientSide() && pAttacker instanceof Player player) {
             if (pAttacker.getRandom().nextFloat() < 0.30f) {
-                // 10% chance: axe breaks
+                // 30% chance: axe breaks
                 pAttacker.level().playSound(null,
                         pAttacker.getX(), pAttacker.getY(), pAttacker.getZ(),
                         SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -68,7 +56,7 @@ public class ThrowingAxe extends Item {
                 if (!player.getAbilities().instabuild) {
                     pStack.shrink(1);
                 }
-                ItemStack broken = new ItemStack(ModItems.THROWING_AXE_BROKEN.get());
+                ItemStack broken = new ItemStack(ModItems.THROWING_AXE_BROKEN);
                 if (!player.getInventory().add(broken)) {
                     player.drop(broken, false);
                 }
@@ -81,14 +69,16 @@ public class ThrowingAxe extends Item {
     public void releaseUsing(ItemStack pStack, Level pLevel, LivingEntity pLivingEntity, int pTimeLeft) {
         if (!(pLivingEntity instanceof Player player)) return;
 
-        int charge = this.getUseDuration(pStack) - pTimeLeft;
+        int charge = this.getUseDuration(pStack, pLivingEntity) - pTimeLeft;
         if (charge < 10) return;
 
         if (!pLevel.isClientSide()) {
             ThrowableAxeEntity axe = new ThrowableAxeEntity(
-                    ModEntities.THROWABLE_AXE.get(), player, pLevel);
+                    ModEntities.THROWABLE_AXE, player, pLevel);
             axe.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.9F, 1.0F);
-            axe.setBaseDamage(5.5);
+            // Damage = ceil(velocity * baseDamage): 4.0 * 1.9 = 7.6 -> 8 at launch (thrown trident level).
+            // Before 1.0.3: 5.5 base + 1 HP via setHealth (bypassed death handling: no loot/XP/death message).
+            axe.setBaseDamage(4.0);
             axe.setKnockback(1);
             axe.setSilent(true);
 

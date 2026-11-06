@@ -1,75 +1,78 @@
 package net.petemc.vikingarmorweapons.items;
 
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import java.util.List;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
+import net.petemc.vikingarmorweapons.VikingArmorWeapons;
 
 public class VikingHammer extends AxeItem {
-        public VikingHammer() {
-            super(new Tier() {
-                @Override
-                public int getUses() {
-                    return 700;
-                }
-
-                @Override
-                public float getSpeed() {
-                    return 6.0F;
-                }
-
-                @Override
-                public float getAttackDamageBonus() {
-                    return 8.0F;
-                }
-
-                @Override
-                public int getLevel() {
-                    return 1;
-                }
-
-                @Override
-                public int getEnchantmentValue() {
-                    return 15;
-                }
-
-                @Override
-                public Ingredient getRepairIngredient() {
-                    return Ingredient.of(new ItemStack[]{new ItemStack(Items.IRON_INGOT), new ItemStack(Items.FLINT)});
-                }
-            }, 1.0F, -3.75F, (new Properties()).fireResistant());
+    static final Tier TIER = new Tier() {
+        @Override
+        public int getUses() {
+            return 700;
         }
 
-    public VikingHammer(Tier pTier, float pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
-        super(pTier, pAttackDamageModifier, pAttackSpeedModifier, pProperties);
+        @Override
+        public float getSpeed() {
+            return 6.0F;
+        }
+
+        @Override
+        public float getAttackDamageBonus() {
+            return 10.0F;
+        }
+
+        // Replaces getLevel() == 1 (stone level) from 1.20.1
+        @Override
+        public TagKey<Block> getIncorrectBlocksForDrops() {
+            return BlockTags.INCORRECT_FOR_STONE_TOOL;
+        }
+
+        @Override
+        public int getEnchantmentValue() {
+            return 15;
+        }
+
+        @Override
+        public Ingredient getRepairIngredient() {
+            return Ingredient.of(Items.IRON_INGOT, Items.FLINT);
+        }
+    };
+
+    public VikingHammer() {
+        super(TIER, (new Item.Properties()).fireResistant().attributes(
+                AxeItem.createAttributes(TIER, 1.0F, -3.4F).withModifierAdded(
+                        Attributes.ATTACK_KNOCKBACK,
+                        new AttributeModifier(VikingArmorWeapons.id("hammer_knockback"), 1.0, AttributeModifier.Operation.ADD_VALUE),
+                        EquipmentSlotGroup.MAINHAND)));
     }
 
-    public boolean hasCraftingRemainingItem(ItemStack stack) {
-            return true;
+    // Critical hits knock back all enemies around the target (see WeaponAbilities)
+    @Override
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        if (attacker instanceof Player player) {
+            WeaponAbilities.shockwave(player, target);
         }
-
-        public ItemStack getCraftingRemainingItem(ItemStack itemstack) {
-            return new ItemStack(this);
-        }
-
-        public boolean isRepairable(ItemStack itemstack) {
-            return false;
-        }
+        return super.hurtEnemy(stack, target, attacker);
+    }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pSlot) {
-        if (pSlot == EquipmentSlot.MAINHAND) {
-            ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-            builder.putAll(super.getDefaultAttributeModifiers(pSlot));
-            builder.put(Attributes.ATTACK_KNOCKBACK, new AttributeModifier(
-                    java.util.UUID.fromString("9ad7f4b2-1c3e-4f5a-8d6b-7e2a1f3c5d4e"),
-                    "Knockback modifier", 2.0, AttributeModifier.Operation.ADDITION));
-            return builder.build();
-        }
-        return super.getDefaultAttributeModifiers(pSlot);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        tooltip.add(Component.translatable(this.getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
     }
 }

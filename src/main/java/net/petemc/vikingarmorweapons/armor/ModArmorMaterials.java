@@ -1,76 +1,43 @@
 package net.petemc.vikingarmorweapons.armor;
 
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.petemc.vikingarmorweapons.VikingArmorWeapons;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
+import java.util.EnumMap;
+import java.util.List;
 
-public enum ModArmorMaterials implements ArmorMaterial {
-    VIKING("viking",
-            new int[]{13, 15, 16, 11}, 20,
-            new int[]{2, 5, 6, 2}, 10,
-            SoundEvents.ARMOR_EQUIP_LEATHER,
-            1.0F, 0.1F,
-            () -> Ingredient.of(new ItemStack(Items.LEATHER), new ItemStack(Items.RAW_IRON), new ItemStack(Items.IRON_INGOT)));
+/**
+ * Since 1.20.5 armor materials are registry entries. Same values as the 1.20.1 versions.
+ * Durability is no longer part of the material: it's set per item via ArmorItem.Type.getDurability(DURABILITY_MULTIPLIER),
+ * vanilla base values {11, 16, 15, 13} x 20 = Helmet 220, Chest 320, Legs 300, Boots 260 (same as before).
+ */
+public class ModArmorMaterials {
+    public static final int DURABILITY_MULTIPLIER = 20;
 
-    private final String name;
-    private final int[] slotDurabilities;
-    private final int durabilityMultiplier;
-    private final int[] slotProtections;
-    private final int enchantmentValue;
-    private final SoundEvent sound;
-    private final float toughness;
-    private final float knockbackResistance;
-    private final Supplier<Ingredient> repairIngredient;
+    public static final Holder<ArmorMaterial> VIKING = Registry.registerForHolder(BuiltInRegistries.ARMOR_MATERIAL,
+            VikingArmorWeapons.id("viking"),
+            new ArmorMaterial(
+                    defense(2, 5, 6, 2),
+                    10,
+                    SoundEvents.ARMOR_EQUIP_LEATHER,
+                    () -> Ingredient.of(Items.LEATHER, Items.RAW_IRON, Items.IRON_INGOT),
+                    // The textures are chosen in client.renderer.VikingArmorRenderer, this layer name is only the vanilla fallback
+                    List.of(new ArmorMaterial.Layer(VikingArmorWeapons.id("viking"))),
+                    1.0F, 0.1F));
 
-    ModArmorMaterials(String name, int[] slotDurabilities, int durabilityMultiplier, int[] slotProtections, int enchantmentValue, SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
-        this.name = name;
-        this.slotDurabilities = slotDurabilities;
-        this.durabilityMultiplier = durabilityMultiplier;
-        this.slotProtections = slotProtections;
-        this.enchantmentValue = enchantmentValue;
-        this.sound = sound;
-        this.toughness = toughness;
-        this.knockbackResistance = knockbackResistance;
-        this.repairIngredient = repairIngredient;
-    }
-
-    public int getDurabilityForType(ArmorItem.Type type) {
-        return this.slotDurabilities[type.getSlot().getIndex()] * this.durabilityMultiplier;
-    }
-
-    public int getDefenseForType(ArmorItem.Type type) {
-        return this.slotProtections[type.getSlot().getIndex()];
-    }
-
-    public @NotNull Ingredient getRepairIngredient() {
-        return this.repairIngredient.get();
-    }
-
-    public @NotNull String getName() {
-        return VikingArmorWeapons.MOD_ID + ":" + this.name;
-    }
-
-    public int getEnchantmentValue() {
-        return this.enchantmentValue;
-    }
-
-    public @NotNull SoundEvent getEquipSound() {
-        return this.sound;
-    }
-
-    public float getToughness() {
-        return this.toughness;
-    }
-
-    public float getKnockbackResistance() {
-        return this.knockbackResistance;
+    private static EnumMap<ArmorItem.Type, Integer> defense(int boots, int leggings, int chestplate, int helmet) {
+        EnumMap<ArmorItem.Type, Integer> map = new EnumMap<>(ArmorItem.Type.class);
+        map.put(ArmorItem.Type.BOOTS, boots);
+        map.put(ArmorItem.Type.LEGGINGS, leggings);
+        map.put(ArmorItem.Type.CHESTPLATE, chestplate);
+        map.put(ArmorItem.Type.HELMET, helmet);
+        return map;
     }
 }

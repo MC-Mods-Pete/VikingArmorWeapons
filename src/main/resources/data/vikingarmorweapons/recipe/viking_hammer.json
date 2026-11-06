@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item": "vikingarmorweapons:viking_hammer",
-    "count": 1
+    "count": 1,
+    "id": "vikingarmorweapons:viking_hammer"
   }
 }

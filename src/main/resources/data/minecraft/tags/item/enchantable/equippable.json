@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "vikingarmorweapons:viking_helmet",
+    "vikingarmorweapons:viking_chestplate",
+    "vikingarmorweapons:viking_leggings",
+    "vikingarmorweapons:viking_boots"
+  ]
+}

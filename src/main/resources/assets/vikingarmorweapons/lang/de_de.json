@@ -1,0 +1,16 @@
+{
+  "itemGroup.vikingarmorweapons": "Wikinger-Rüstung & Waffen",
+
+  "item.vikingarmorweapons.viking_battle_axe": "Wikinger-Streitaxt",
+  "item.vikingarmorweapons.viking_battle_axe.tooltip": "Voll aufgeladene Schläge treffen auch Gegner in der Nähe",
+  "item.vikingarmorweapons.viking_light_axe": "Leichte Wikingeraxt",
+  "item.vikingarmorweapons.viking_hammer": "Wikingerhammer",
+  "item.vikingarmorweapons.viking_hammer.tooltip": "Kritische Treffer (Schlag im Fallen) stoßen Gegner in der Nähe zurück",
+  "item.vikingarmorweapons.throwing_axe": "Wurfaxt",
+  "item.vikingarmorweapons.viking_light_axe_broken": "Zerbrochene Wurfaxt",
+
+  "item.vikingarmorweapons.viking_helmet": "Wikingerhelm",
+  "item.vikingarmorweapons.viking_chestplate": "Wikingerharnisch",
+  "item.vikingarmorweapons.viking_leggings": "Wikingerbeinschutz",
+  "item.vikingarmorweapons.viking_boots": "Wikingerstiefel"
+}

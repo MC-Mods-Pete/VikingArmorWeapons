@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "vikingarmorweapons:item/viking_light_axe"
+  },
+  "gui_light": "front"
+}

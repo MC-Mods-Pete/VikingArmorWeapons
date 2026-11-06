@@ -11,13 +11,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.petemc.vikingarmorweapons.VikingArmorWeapons;
 import org.jetbrains.annotations.NotNull;
 
 public class VikingArmorModel<T extends Entity> extends EntityModel<T> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(VikingArmorWeapons.MOD_ID, "modelviking_armor"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(VikingArmorWeapons.id("modelviking_armor"), "main");
     public final ModelPart chestplate;
     public final ModelPart left_leg;
     public final ModelPart right_leg;
@@ -73,17 +72,17 @@ public class VikingArmorModel<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        this.chestplate.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.helmet.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.legginsleft.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.legginsright.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.seax.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.boots.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+        this.chestplate.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.helmet.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.legginsleft.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.legginsright.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.seax.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.boots.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
     }
 }
 

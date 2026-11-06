@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": ["${mod_authors}"],
+  "contact": {
+    "email": "${mod_contact_email}"
+  },
+  "license": "${mod_license}",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["net.petemc.vikingarmorweapons.VikingArmorWeapons"],
+    "client": ["net.petemc.vikingarmorweapons.client.VikingArmorWeaponsClient"]
+  },
+  "mixins": ["vikingarmorweapons.mixins.json"],
+  "depends": {
+    "fabricloader": ">=${loader_version_min}",
+    "minecraft": "${minecraft_version_range}",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
