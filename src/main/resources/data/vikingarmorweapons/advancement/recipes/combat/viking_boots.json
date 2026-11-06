@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "vikingarmorweapons:viking_boots"
+    ]
+  },
+  "criteria": {
+    "has_iron_boots": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:iron_boots"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipes": "vikingarmorweapons:viking_boots"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_iron_boots",
+      "has_the_recipe"
+    ]
+  ]
+}
